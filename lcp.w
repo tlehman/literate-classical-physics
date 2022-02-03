@@ -22,7 +22,7 @@
 %\begin{multicols}{2}
 
 @* Introduction.
-This program simulates a 3D universe subject to the laws of Newtonian mechanics. The basic ontology\footnote{An ontology is a scheme defining what exists.} is a collection of rigid spheres, each with a position $(x,y,z)$, radius $r$, and a mass $m$. 
+This program simulates a 3D universe subject to the laws of Newtonian mechanics. The basic ontology\footnote{An ontology is a scheme defining what exists.} is a collection of rigid bodies, shaped like spheres, each with a position $(x,y,z)$, a velocity $\vec{v}$, radius $r$, and a mass $m$. 
 
 \begin{tikzpicture}
   \shade[ball color = gray!40, opacity = 0.4] (0,0) circle (2cm);
@@ -33,6 +33,7 @@ This program simulates a 3D universe subject to the laws of Newtonian mechanics.
   \draw[dashed] (0,0) -- node[above]{$r_1$} (2,0);
   \draw (0,0) node[below]{$(x_1,y_1,z_1)$};
   \draw (0,2) node[below]{$m_1$};
+  \draw [-stealth](0,0) -> (2,1) node[right]{$\vec{v_1}$};
 
   \shade[ball color = gray!40, opacity = 0.2] (5,0) circle (1cm);
   \draw (5,0) node{.};
@@ -43,11 +44,16 @@ This program simulates a 3D universe subject to the laws of Newtonian mechanics.
   \draw[dashed] (5,0) -- node[above]{$r_2$} (6,0);
   \draw (5,0) node[below]{$(x_2,y_2,z_2)$};
   \draw (5,1) node[below]{$m_2$};
+  \draw [-stealth](5,0) -> (4.5,1.76) node[right]{$\vec{v_2}$};
 \end{tikzpicture}
 
-The bodies' positions and velocities are updated according to the Newtonian gravitational rule $\hat{F} = G\frac{m_1m_2}{r^2}$ at each time step $t$, and the scene is rendered.
+The collection of all bodies in the simulation is called the Universe. The state of the Universe is the collection of positions and velocities of all the bodies. The state is updated at each time step $t$. The state update rule is based on the law of Newtonian gravity:
 
-This is the overall structure of the program {\tt lcp.c}
+$$\vec{F_{12}} = G\frac{m_1m_2}{r^2}\hat{r}$$
+
+To understand how this law applies, remember that force is proportional to acceleration, and acceleration is the rate of change of velocity. In vector form: $\vec{F} = m\vec{a}$, and $\vec{a} = \frac{d}{dt}\vec{v}$. Now that we have connected the force law to the state of the Universe, we can guess how to update the state and compute the next moment. We take all pairs of bodies $(i, j)$ and calculate the forces between them $\vec{F_{ij}}$
+
+@ This is the overall structure of the program {\tt lcp.c}
 
 @c
 @<Header files@>@/
