@@ -4,5 +4,8 @@ weave:
 tangle:
 	ctangle lcp.w
 
+debug: tangle
+	c99 -g lcp.c -lm
+
 clean:
-	rm lcp.log lcp.tex lcp.scn lcp.idx lcp.aux lcp.out
+	rm lcp.log lcp.tex lcp.scn lcp.idx lcp.aux lcp.out a.out
