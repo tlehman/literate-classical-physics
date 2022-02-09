@@ -3,14 +3,6 @@
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{tikz}
-\usepackage{xcolor}% http://ctan.org/pkg/xcolor
-\usepackage{hyperref}% http://ctan.org/pkg/hyperref
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue!50!red,
-  urlcolor=blue!70!black,
-  pdfborderstyle={/S/U/W 2}% border style will be underline of width 1pt
-}
 
 %\usepackage{multicol}
 \usepackage[margin=1.0in]{geometry}
@@ -60,6 +52,7 @@ To understand how this law applies, remember that force is proportional to accel
 @<Header files@>@/
 @<Constants@>@/
 @<Struct types@>@/
+@<Distance function@>@/
 @<Function definitions@>@/
 @<The main program@>
 
@@ -79,6 +72,17 @@ typedef struct body {
     float mass;
     float radius;
 } body;
+
+@ The |distance| function is essential to calculating the force between two bodies.
+
+@<Distance function@>=
+float distance(body *a, body *b) {
+  float dx = a->position.x - b->position.x;
+  float dy = a->position.y - b->position.y;
+  float dz = a->position.z - b->position.z;
+
+  return sqrtf(dx*dx + dy*dy + dz*dz);
+}
 
 @ Here is the general layout of the |main| function.
 
@@ -120,7 +124,7 @@ const int G = 1;
 
 @ Newtonian physics introduced the idea that the force on any body is the sum of all the forces acting on it. Given an $n$-body system, take the $i$th body, sum over all the $n-1$ other bodies' force on $i$.
 
-$\underbrace{\LARGE \sum_j\vec{F_{ij}}}_\text{sum of all forces acting on the i-th body} = m_i\vec{a}_i$
+$\underbrace{\sum_j\vec{F_{ij}}}_\text{sum of all forces acting on the i-th body} = m_i\vec{a}_i$
 
 @<Loop over all bodies, add up forces and apply the force to the body@>=
 for(int i = 0; i < n; i++) {
@@ -153,13 +157,6 @@ a->position.z += a->velocity.z * dt;
 @ In a previous section we used a few functions we haven't defined yet, one calculates the graviational force between two bodies, the other does vector addition. In the typical C style, we pass pointers to our structs as a way to get return values.
 
 @<Function definitions@>=
-float distance(body *a, body *b) {
-  float dx = a->position.x - b->position.x;
-  float dy = a->position.y - b->position.y;
-  float dz = a->position.z - b->position.z;
-
-  return sqrtf(dx*dx + dy*dy + dz*dz);
-}
 void force_between(body *a, body *b, vec3 *f) {
   float m_a = a->mass;
   float m_b = b->mass;
@@ -183,7 +180,7 @@ void vec3_add(vec3 *output, vec3 *to_add) {
 #include <math.h>
 
 @* Rendering.
-We want the state of the 3D universe to be displayed on a 2D screen.
+We want the state of the 3D universe to be displayed on a 2D screen. For this we will build a ray tracer. A ray tracer simulates rays of light that reflect off of the 3D scene and then hit the camera.
 
 @ For debugging purposes, before we implement rendering, we should output the states to stdout:
 

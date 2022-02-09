@@ -1,26 +1,26 @@
 /*2:*/
-#line 59 "lcp.w"
+#line 51 "lcp.w"
 
-/*11:*/
-#line 181 "lcp.w"
+/*12:*/
+#line 178 "lcp.w"
 
 #include <stdio.h> 
 #include <math.h> 
 
-/*:11*/
-#line 60 "lcp.w"
+/*:12*/
+#line 52 "lcp.w"
 
-/*7:*/
-#line 117 "lcp.w"
+/*8:*/
+#line 121 "lcp.w"
 
 const float dt= 0.00001;
 const int G= 1;
 
-/*:7*/
-#line 61 "lcp.w"
+/*:8*/
+#line 53 "lcp.w"
 
 /*3:*/
-#line 72 "lcp.w"
+#line 65 "lcp.w"
 
 typedef struct vec3{
 float x,y,z;
@@ -33,10 +33,10 @@ float radius;
 }body;
 
 /*:3*/
-#line 62 "lcp.w"
+#line 54 "lcp.w"
 
-/*10:*/
-#line 155 "lcp.w"
+/*4:*/
+#line 78 "lcp.w"
 
 float distance(body*a,body*b){
 float dx= a->position.x-b->position.x;
@@ -45,6 +45,13 @@ float dz= a->position.z-b->position.z;
 
 return sqrtf(dx*dx+dy*dy+dz*dz);
 }
+
+/*:4*/
+#line 55 "lcp.w"
+
+/*11:*/
+#line 159 "lcp.w"
+
 void force_between(body*a,body*b,vec3*f){
 float m_a= a->mass;
 float m_b= b->mass;
@@ -61,15 +68,15 @@ output->y+= to_add->y;
 output->z+= to_add->z;
 }
 
-/*:10*/
-#line 63 "lcp.w"
+/*:11*/
+#line 56 "lcp.w"
 
-/*4:*/
-#line 86 "lcp.w"
+/*5:*/
+#line 90 "lcp.w"
 
 int main(){
-/*5:*/
-#line 94 "lcp.w"
+/*6:*/
+#line 98 "lcp.w"
 
 int n= 2;
 float m= 10.0;
@@ -83,15 +90,15 @@ body bodies[]= {
 {{1,0,0},{0,-v,0},m,1}
 };
 
-/*:5*/
-#line 88 "lcp.w"
+/*:6*/
+#line 92 "lcp.w"
 ;
-/*6:*/
-#line 109 "lcp.w"
+/*7:*/
+#line 113 "lcp.w"
 
 for(float t= 1.0;t<1000.0;t+= dt){
-/*8:*/
-#line 125 "lcp.w"
+/*9:*/
+#line 129 "lcp.w"
 
 for(int i= 0;i<n;i++){
 body*a= &bodies[i];
@@ -104,8 +111,8 @@ force_between(a,b,&force_from_b_on_a);
 vec3_add(&force_on_a,&force_from_b_on_a);
 }
 }
-/*9:*/
-#line 142 "lcp.w"
+/*10:*/
+#line 146 "lcp.w"
 
 float m= a->mass;
 a->velocity.x+= (force_on_a.x/m)*dt;
@@ -117,16 +124,16 @@ a->position.y+= a->velocity.y*dt;
 a->position.z+= a->velocity.z*dt;
 
 
-/*:9*/
-#line 137 "lcp.w"
+/*:10*/
+#line 141 "lcp.w"
 ;
 }
 
-/*:8*/
-#line 111 "lcp.w"
+/*:9*/
+#line 115 "lcp.w"
 ;
-/*13:*/
-#line 190 "lcp.w"
+/*14:*/
+#line 187 "lcp.w"
 
 printf(
 "(%f, %f, %f), (%f, %f, %f)\n",
@@ -134,18 +141,18 @@ bodies[0].position.x,bodies[0].position.y,bodies[0].position.x,
 bodies[1].position.x,bodies[1].position.y,bodies[1].position.x
 );
 
-/*:13*/
-#line 112 "lcp.w"
+/*:14*/
+#line 116 "lcp.w"
 ;
 }
 
-/*:6*/
-#line 89 "lcp.w"
+/*:7*/
+#line 93 "lcp.w"
 ;
 }
 
-/*:4*/
-#line 64 "lcp.w"
+/*:5*/
+#line 57 "lcp.w"
 
 
 /*:2*/

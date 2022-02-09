@@ -19,6 +19,13 @@ sudo apt install texlive-latex-base texlive-latex-recommended texlive-latex-extr
  cwebx gcc
 ```
 
+On MacOS, using homebrew, this will install equivalent dependencies:
+```
+brew install mactex
+```
+
+CWEBx is available in source form here: http://wwwmathlabo.univ-poitiers.fr/~maavl/CWEBx/
+
 ### How to 'weave' the [lcp.w](lcp.w) CWEB source code into a PDF
 
 ```
