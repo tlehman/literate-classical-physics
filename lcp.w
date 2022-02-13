@@ -3,6 +3,8 @@
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{tikz}
+\usepackage{tikz-3dplot}
+
 
 %\usepackage{multicol}
 \usepackage[margin=1.0in]{geometry}
@@ -45,6 +47,25 @@ The collection of all bodies in the simulation is called the Universe. The state
 $$\vec{F_{12}} = G\frac{m_1m_2}{r^2}\hat{r}$$
 
 To understand how this law applies, remember that force is proportional to acceleration, and acceleration is the rate of change of velocity. In vector form: $\vec{F} = m\vec{a}$, and $\vec{a} = \frac{d}{dt}\vec{v}$. Now that we have connected the force law to the state of the Universe, we can guess how to update the state and compute the next moment. We take all pairs of bodies $(i, j)$ and calculate the forces between them $\vec{F_{ij}}$
+
+@ Newtonian physics introduced the idea that the force on any body is the sum of all the forces acting on it. Given an $n$-body system, take the $i$th body, sum over all the $n-1$ other bodies' force on $i$.
+
+$\underbrace{\sum_j\vec{F_{ij}}}_\text{sum of all forces acting on the i-th body} = m_i\vec{a}_i$
+
+@<Loop over all bodies, add up forces and apply the force to the body@>=
+for(int i = 0; i < n; i++) {
+  body *a = &bodies[i];
+  vec3 force_on_a = {0,0,0};
+  for(int j = 0; j < n; j++) {
+    body *b = &bodies[j];
+    if(i != j) {
+      vec3 force_from_b_on_a = {0,0,0};
+      force_between(a, b, &force_from_b_on_a);
+      vec3_add(&force_on_a, &force_from_b_on_a);
+    }
+  }
+  @<Apply the force to the body a@>;
+}
 
 @ This is the overall structure of the program {\tt lcp.c}
 
@@ -122,24 +143,7 @@ for(float t = 1.0; t < 1000.0; t += dt) {
 const float dt = 0.00001;
 const int G = 1;
 
-@ Newtonian physics introduced the idea that the force on any body is the sum of all the forces acting on it. Given an $n$-body system, take the $i$th body, sum over all the $n-1$ other bodies' force on $i$.
 
-$\underbrace{\sum_j\vec{F_{ij}}}_\text{sum of all forces acting on the i-th body} = m_i\vec{a}_i$
-
-@<Loop over all bodies, add up forces and apply the force to the body@>=
-for(int i = 0; i < n; i++) {
-  body *a = &bodies[i];
-  vec3 force_on_a = {0,0,0};
-  for(int j = 0; j < n; j++) {
-    body *b = &bodies[j];
-    if(i != j) {
-      vec3 force_from_b_on_a = {0,0,0};
-      force_between(a, b, &force_from_b_on_a);
-      vec3_add(&force_on_a, &force_from_b_on_a);
-    }
-  }
-  @<Apply the force to the body a@>;
-}
 
 @ Now that |force_on_a| has been calculated, we use Newton's equations: $\vec{F} = m\vec{a}$, and the fact from calculus that $\vec{a} = \frac{d}{dt}\vec{v}$ to update the velocity of the body |a|. The change in acceleration of the body |a| over the |dt| time step is equal to $\vec{F}/m$ where $m$ is the mass of the body |a|.
 
@@ -181,6 +185,37 @@ void vec3_add(vec3 *output, vec3 *to_add) {
 
 @* Rendering.
 We want the state of the 3D universe to be displayed on a 2D screen. For this we will build a ray tracer. A ray tracer simulates rays of light that reflect off of the 3D scene and then hit the camera.
+
+\newcommand{\boundellipse}[3]% center, xdim, ydim
+{(#1) ellipse (#2 and #3)}
+
+\tdplotsetmaincoords{70}{110}
+\begin{tikzpicture}[scale=3,tdplot_main_coords]
+    \filldraw[
+        draw=gray,%
+        fill=gray!20,%
+    ]          (0,1,0)
+            -- (2,1,0)
+            -- (2,1,2)
+            -- (0,1,2)
+            -- cycle;
+    \draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
+    \draw[thick,->] (0,0,0) -- (0,2,0) node[anchor=north west]{$y$};
+    \draw[thick,->] (0,0,0) -- (0,0,2) node[anchor=south]{$z$};
+
+  \shade[ball color = blue!40, opacity = 0.2]
+        (1,4,1.5) circle (0.5cm);
+  \draw (1,4,1.5) node{.};
+  \draw (1,4,1.5) circle (0.5cm);
+
+  \draw[black,dash pattern= on 3pt off 5pt] (1,0,1) -- (1,4,2.05);
+  \draw[black,dash pattern= on 3pt off 5pt] (1,0,1) -- (1,4,0.95);
+
+  \draw[thick, blue] (1, 1, 1.125) [y={(0,0,1)}] circle (0.125);
+
+
+\end{tikzpicture}
+
 
 @ For debugging purposes, before we implement rendering, we should output the states to stdout:
 
