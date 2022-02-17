@@ -1,26 +1,34 @@
-/*2:*/
-#line 51 "lcp.w"
+/*6:*/
+#line 123 "lcp.w"
 
-/*12:*/
-#line 178 "lcp.w"
+/*13:*/
+#line 203 "lcp.w"
 
 #include <stdio.h> 
 #include <math.h> 
 
-/*:12*/
-#line 52 "lcp.w"
+/*:13*/
+#line 124 "lcp.w"
 
-/*8:*/
-#line 121 "lcp.w"
+/*11:*/
+#line 176 "lcp.w"
 
 const float dt= 0.00001;
 const int G= 1;
 
-/*:8*/
-#line 53 "lcp.w"
 
-/*3:*/
-#line 65 "lcp.w"
+
+/*:11*//*15:*/
+#line 251 "lcp.w"
+
+const int pixel_width= 800;
+const int pixel_height= 600;
+
+/*:15*/
+#line 125 "lcp.w"
+
+/*5:*/
+#line 110 "lcp.w"
 
 typedef struct vec3{
 float x,y,z;
@@ -32,11 +40,40 @@ float mass;
 float radius;
 }body;
 
-/*:3*/
-#line 54 "lcp.w"
+/*:5*/
+#line 126 "lcp.w"
 
-/*4:*/
-#line 78 "lcp.w"
+/*16:*/
+#line 257 "lcp.w"
+
+void render(body bodies[]){
+for(int i= 0;i<pixel_width;i++){
+for(int j= 0;j<pixel_height;j++){
+/*14:*/
+#line 246 "lcp.w"
+
+TODO
+
+/*:14*/
+#line 261 "lcp.w"
+;
+/*17:*/
+#line 269 "lcp.w"
+
+TODO
+
+/*:17*/
+#line 262 "lcp.w"
+;
+}
+}
+}
+
+/*:16*/
+#line 127 "lcp.w"
+
+/*7:*/
+#line 134 "lcp.w"
 
 float distance(body*a,body*b){
 float dx= a->position.x-b->position.x;
@@ -46,11 +83,11 @@ float dz= a->position.z-b->position.z;
 return sqrtf(dx*dx+dy*dy+dz*dz);
 }
 
-/*:4*/
-#line 55 "lcp.w"
+/*:7*/
+#line 128 "lcp.w"
 
-/*11:*/
-#line 159 "lcp.w"
+/*12:*/
+#line 184 "lcp.w"
 
 void force_between(body*a,body*b,vec3*f){
 float m_a= a->mass;
@@ -68,91 +105,79 @@ output->y+= to_add->y;
 output->z+= to_add->z;
 }
 
-/*:11*/
-#line 56 "lcp.w"
-
-/*5:*/
-#line 90 "lcp.w"
-
-int main(){
-/*6:*/
-#line 98 "lcp.w"
-
-int n= 2;
-float m= 10.0;
-
-float r= 2;
-
-float v= sqrtf((G*m)/(4*r));
-
-body bodies[]= {
-{{-1,0,0},{0,v,0},m,1},
-{{1,0,0},{0,-v,0},m,1}
-};
-
-/*:6*/
-#line 92 "lcp.w"
-;
-/*7:*/
-#line 113 "lcp.w"
-
-for(float t= 1.0;t<1000.0;t+= dt){
-/*9:*/
+/*:12*/
 #line 129 "lcp.w"
 
-for(int i= 0;i<n;i++){
-body*a= &bodies[i];
-vec3 force_on_a= {0,0,0};
-for(int j= 0;j<n;j++){
-body*b= &bodies[j];
-if(i!=j){
-vec3 force_from_b_on_a= {0,0,0};
-force_between(a,b,&force_from_b_on_a);
-vec3_add(&force_on_a,&force_from_b_on_a);
-}
-}
-/*10:*/
+/*8:*/
 #line 146 "lcp.w"
 
-float m= a->mass;
-a->velocity.x+= (force_on_a.x/m)*dt;
-a->velocity.y+= (force_on_a.y/m)*dt;
-a->velocity.z+= (force_on_a.z/m)*dt;
+int main(){
+/*9:*/
+#line 154 "lcp.w"
 
-a->position.x+= a->velocity.x*dt;
-a->position.y+= a->velocity.y*dt;
-a->position.z+= a->velocity.z*dt;
+int number_of_bodies= 2;
+float mass= 10.0;
 
+float radius= 2;
 
-/*:10*/
-#line 141 "lcp.w"
-;
-}
+float v= sqrtf((G*mass)/(4*radius));
+
+body bodies[]= {
+{{-1,0,0},{0,v,0},mass,1},
+{{1,0,0},{0,-v,0},mass,1}
+};
 
 /*:9*/
-#line 115 "lcp.w"
+#line 148 "lcp.w"
 ;
-/*14:*/
-#line 187 "lcp.w"
+/*10:*/
+#line 169 "lcp.w"
 
-printf(
-"(%f, %f, %f), (%f, %f, %f)\n",
-bodies[0].position.x,bodies[0].position.y,bodies[0].position.x,
-bodies[1].position.x,bodies[1].position.y,bodies[1].position.x
-);
+for(float t= 1.0;t<1000.0;t+= dt){
+/*3:*/
+#line 76 "lcp.w"
 
-/*:14*/
-#line 116 "lcp.w"
+for(int i= 0;i<number_of_bodies;i++){
+body*ith_body= &bodies[i];
+vec3 force_on_ith_body= {0,0,0};
+for(int j= 0;j<number_of_bodies;j++){
+body*jth_body= &bodies[j];
+if(i!=j){
+vec3 force_from_j_on_i= {0,0,0};
+force_between(ith_body,jth_body,&force_from_j_on_i);
+vec3_add(&force_on_ith_body,&force_from_j_on_i);
+}
+}
+/*4:*/
+#line 94 "lcp.w"
+
+float m= ith_body->mass;
+ith_body->velocity.x+= (force_on_ith_body.x/m)*dt;
+ith_body->velocity.y+= (force_on_ith_body.y/m)*dt;
+ith_body->velocity.z+= (force_on_ith_body.z/m)*dt;
+
+ith_body->position.x+= ith_body->velocity.x*dt;
+ith_body->position.y+= ith_body->velocity.y*dt;
+ith_body->position.z+= ith_body->velocity.z*dt;
+
+/*:4*/
+#line 88 "lcp.w"
 ;
 }
 
-/*:7*/
-#line 93 "lcp.w"
+
+/*:3*/
+#line 171 "lcp.w"
 ;
 }
 
-/*:5*/
-#line 57 "lcp.w"
+/*:10*/
+#line 149 "lcp.w"
+;
+}
+
+/*:8*/
+#line 130 "lcp.w"
 
 
-/*:2*/
+/*:6*/
